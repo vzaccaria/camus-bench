@@ -8,13 +8,14 @@ var $d = _require.$d;
 var $o = _require.$o;
 var $f = _require.$f;
 var _ = _require._;
-var $fs = _require.$fs;
-var $b
+var $fs
 // $r.stdin() -> Promise  ;; to read from stdin
-= _require.$b;
+= _require.$fs;
 
+var $b = require("bluebird");
 var R = require("ramda");
 var debug = require("debug")("camus-bench");
+var PD = require("probability-distributions");
 
 function perr(m) {
     console.log("Error: " + m);
@@ -27,17 +28,21 @@ var getOptions = function (doc) {
     var o = $d(doc);
     var help = $o("-h", "--help", false, o);
     var useDistribution = o.distribution;
-    var computeServiceTime = o["service-time"];
     var collect = o.collect;
     var lambda = parseFloat($o("-l", "--lambda", 1, o));
     var type = $o("-t", "--type", "fixed", o);
-    var url = $o("-e", "--endpoint", undefined, o);
+    var computeServiceTime = o["service-time"];
+    if (computeServiceTime) {
+        type = "servicetime";
+    }
+    var url = $o("-u", "--url", undefined, o);
+    var get = $o("-e", "--get", false, o);
     var data = $o("-d", "--datafile", undefined, o);
     var tag = $o("-g", "--tag", undefined, o);
     var num = $o("-n", "--num", 10, o);
 
     return {
-        help: help, useDistribution: useDistribution, computeServiceTime: computeServiceTime, collect: collect, lambda: lambda, type: type, url: url, data: data, tag: tag, num: num
+        help: help, useDistribution: useDistribution, computeServiceTime: computeServiceTime, collect: collect, lambda: lambda, type: type, url: url, data: data, tag: tag, num: num, get: get
     };
 };
 
@@ -47,32 +52,85 @@ function measureRequest(opts, payload) {
     var tag = opts.tag;
     var lambda = opts.lambda;
 
-    return agent.get(opts.url).end().then(function () {
+    var promise = undefined;
+    if (opts.get) {
+        promise = agent.get(opts.url).end();
+    } else {
+        promise = agent.post(opts.url).send(payload).end();
+    }
+    return promise.then(function () {
         var responseTime = process.hrtime(startTime);
+        var nano = responseTime[1];
+        var secs = responseTime[0];
+        responseTime = secs * 1000 + nano / 10000000;
         var success = true;
-        return { type: type, tag: tag, lambda: lambda, responseTime: responseTime, success: success };
+        return {
+            type: type, tag: tag, lambda: lambda, responseTime: responseTime, success: success
+        };
     })["catch"](function () {
         var success = false;
         var responseTime = 0;
-        return { type: type, tag: tag, lambda: lambda, responseTime: responseTime, success: success };
+        return {
+            type: type, tag: tag, lambda: lambda, responseTime: responseTime, success: success
+        };
     });
 }
 
-function processFixed(opts, payload) {
-    var lambda = opts.lambda;
+function processServiceTime(opts, payload) {
     var num = opts.num;
 
-    var times = _.map(_.range(0, num), function () {
-        return 1 / lambda;
+    return $b.mapSeries(_.range(0, num), function () {
+        return measureRequest(opts, payload);
     });
-    debug(times);
+}
+
+function processDist(opts, payload, generator) {
+    var num = opts.num;
+
+    var times = _.map(_.range(0, num), generator);
+    debug("Numbers extracted from sampler: " + times);
     times = R.scan(R.add, 1, times);
-    debug(times);
+    debug("Scheduled reqs at " + times);
     return $b.map(times, function (time) {
         return $b.delay(time * 1000).then(function () {
             return measureRequest(opts, payload);
         });
     });
+}
+
+function processExponential(opts, payload) {
+    var samples = PD.rexp(opts.num, opts.lambda);
+    var gen = function (i) {
+        return samples[i];
+    };
+    return processDist(opts, payload, gen);
+}
+
+function processFixed(opts, payload) {
+    var lambda = opts.lambda;
+
+    return processDist(opts, payload, function () {
+        return 1 / lambda;
+    });
+}
+
+function processWorkload(opts, payload) {
+    var type = opts.type;
+    var computeServiceTime = opts.computeServiceTime;
+
+    var dataPromise = {};
+    if (!computeServiceTime) {
+        if (type === "fixed") {
+            dataPromise = processFixed(opts, payload);
+        } else {
+            if (type === "exponential") {
+                dataPromise = processExponential(opts, payload);
+            }
+        }
+    } else {
+        dataPromise = processServiceTime(opts, payload);
+    }
+    return dataPromise;
 }
 
 var main = function () {
@@ -82,7 +140,6 @@ var main = function () {
         var help = opts.help;
         var data = opts.data;
         var tag = opts.tag;
-        var type = opts.type;
 
         if (help) {
             console.log(it);
@@ -97,11 +154,9 @@ var main = function () {
                     process.exit(0);
                 } else {
                     var payload = res.payload;
-                    if (type === "fixed") {
-                        processFixed(opts, payload).then(function (it) {
-                            console.log(JSON.stringify(it, 0, 4));
-                        });
-                    }
+                    processWorkload(opts, payload).then(function (it) {
+                        console.log(JSON.stringify(it, 0, 4));
+                    });
                 }
             });
         }
