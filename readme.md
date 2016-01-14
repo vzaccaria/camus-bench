@@ -31,8 +31,7 @@ Commands:
     distribution            measure response time
 
 Arguments:
-    FILES                   files to be collected
-    DATA                    files with request payload
+    DATA                    file with the request payloads
 
 Description:
 
