@@ -1,7 +1,7 @@
 {
   "name": "camus-test",
   "version": "0.1.0",
-  "description": "No name given yet",
+  "description": "A little utility for testing the CAMUS prototype",
   "main": "index.js",
   "bin": {
     "camus-test": "./index.js"

@@ -1,7 +1,6 @@
 Usage:
     camus-test distribution [ -n N ] ( -u URL ) ( -d DATA ) ( -g TAG ) [ -e ] [ -l LAMBDA ] [ -t TYPE ]
     camus-test service-time [ -n N ] ( -u URL ) ( -d DATA ) ( -g TAG ) [ -e ]
-    camus-test collect FILES...
     camus-test ( -h | --help )
 
 Options:
@@ -17,14 +16,14 @@ Options:
 Commands:
     service-time            measure service time (back-to-back requests)
     distribution            measure response time
-    collect                 collect several json measurements into a single one
 
 Arguments:
     FILES                   files to be collected
     DATA                    files with request payload
 
 Description:
-    The following are the arrival rate distributions available:
+
+    The following arrival rate distributions are available:
 
     - 'fixed': arrivals occur at fixed regular intervals (uses the parameter LAMBDA to specify the rate).
 
