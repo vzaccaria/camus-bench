@@ -39,7 +39,7 @@ var getOptions = function (doc) {
     var get = $o("-e", "--get", false, o);
     var data = $o("-d", "--datafile", undefined, o);
     var tag = $o("-g", "--tag", undefined, o);
-    var num = $o("-n", "--num", 10, o);
+    var num = $o("-n", "--numreq", 10, o);
 
     return {
         help: help, useDistribution: useDistribution, computeServiceTime: computeServiceTime, collect: collect, lambda: lambda, type: type, url: url, data: data, tag: tag, num: num, get: get
