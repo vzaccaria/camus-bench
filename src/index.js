@@ -31,7 +31,7 @@ let getOptions = doc => {
     let get = $o('-e', '--get', false, o)
     let data = $o('-d', '--datafile', undefined, o)
     let tag = $o('-g', '--tag', undefined, o)
-    let num = $o('-n', '--numreq', 10, o)
+    let num = parseInt($o('-n', '--numreq', 10, o))
 
     return {
         help, useDistribution, computeServiceTime, collect, lambda, type, url, data, tag, num, get
@@ -81,7 +81,7 @@ function processDist(opts, payload, generator) {
     let {
         num
     } = opts;
-    let times = _.map(_.range(0, num), generator)
+    let times = _.map(_.range(0, num - 1), generator)
     debug(`Numbers extracted from sampler: ${times}`)
     times = R.scan(R.add, 1, times)
     debug(`Scheduled reqs at ${times}`)
