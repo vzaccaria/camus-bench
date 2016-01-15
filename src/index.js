@@ -53,7 +53,7 @@ function measureRequest(opts, payload) {
         let responseTime = process.hrtime(startTime);
         let nano = responseTime[1];
         let secs = responseTime[0];
-        responseTime = secs * 1000 + nano / 10000000
+        responseTime = secs * 1000 + nano / 1000000
         let success = true
         return {
             type, tag, lambda, responseTime, success
