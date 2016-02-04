@@ -16,6 +16,8 @@ var $b = require("bluebird");
 var R = require("ramda");
 var debug = require("debug")("camus-bench");
 var PD = require("probability-distributions");
+const Lokka = require('lokka').Lokka;
+const Transport = require('lokka-transport-http').Transport;
 
 function perr(m) {
     console.log("Error: " + m);
@@ -40,9 +42,10 @@ var getOptions = function (doc) {
     var data = $o("-d", "--datafile", undefined, o);
     var tag = $o("-g", "--tag", undefined, o);
     var num = parseInt($o("-n", "--numreq", 10, o));
+    var graphql = $o("-q", "--graphql", false, o);
 
     return {
-        help: help, useDistribution: useDistribution, computeServiceTime: computeServiceTime, collect: collect, lambda: lambda, type: type, url: url, data: data, tag: tag, num: num, get: get
+        help: help, useDistribution: useDistribution, computeServiceTime: computeServiceTime, collect: collect, lambda: lambda, type: type, url: url, data: data, tag: tag, num: num, get: get, graphql: graphql
     };
 };
 
@@ -53,7 +56,11 @@ function measureRequest(opts, payload) {
     var lambda = opts.lambda;
 
     var promise = undefined;
-    if (opts.get) {
+    if (opts.graphql) {
+        promise = new Lokka({
+              transport: new Transport(opts.url)
+            }).query(payload);
+    } else if (opts.get) {
         promise = agent.get(opts.url).end();
     } else {
         promise = agent.post(opts.url).send(payload).end();

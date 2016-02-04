@@ -1,6 +1,6 @@
 Usage:
-    camus-test distribution [ -n N ] ( -u URL ) ( -d DATA ) ( -g TAG ) [ -e ] [ -l LAMBDA ] [ -t TYPE ]
-    camus-test service-time [ -n N ] ( -u URL ) ( -d DATA ) ( -g TAG ) [ -e ]
+    camus-test distribution [ -n N ] ( -u URL ) ( -d DATA ) ( -g TAG ) [ -e ] [ -l LAMBDA ] [ -t TYPE ] [ -q ]
+    camus-test service-time [ -n N ] ( -u URL ) ( -d DATA ) ( -g TAG ) [ -e ] [ -q ]
     camus-test ( -h | --help )
 
 Options:
@@ -12,6 +12,7 @@ Options:
     -d, --datafile DATA     file with request payloads
     -g, --tag TAG           payload to use
     -e, --get               use HTTP get
+    -q, --graphql           make GraphQL query
 
 Commands:
     service-time            measure service time (back-to-back requests)
