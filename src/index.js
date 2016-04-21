@@ -36,7 +36,7 @@ let getOptions = doc => {
     return {
         help, useDistribution, computeServiceTime, collect, lambda, type, url, data, tag, num, get
     }
-}
+} 
 
 function measureRequest(opts, payload) {
     let startTime = process.hrtime();
