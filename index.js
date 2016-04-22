@@ -134,7 +134,7 @@ function processWorkload(opts, payload) {
 }
 
 var main = function () {
-    $f.readLocal("docs/usage.md").then(function (it) {
+    $fs.readFileAsync(__dirname + "/docs/usage.md", "utf8").then(function (it) {
         var opts = getOptions(it);
         debug(opts);
         var help = opts.help;

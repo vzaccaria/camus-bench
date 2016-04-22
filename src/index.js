@@ -129,7 +129,7 @@ function processWorkload(opts, payload) {
 }
 
 let main = () => {
-    $f.readLocal('docs/usage.md').then(it => {
+    $fs.readFileAsync(__dirname + '/docs/usage.md', 'utf8').then(it => {
         let opts = getOptions(it)
         debug(opts);
         let {
