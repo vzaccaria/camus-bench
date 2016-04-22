@@ -1,44 +1,42 @@
 {
-  "name": "camus-test",
-  "version": "0.1.7",
-  "description": "A little utility for testing the CAMUS prototype",
-  "main": "index.js",
-  "bin": {
-    "camus-test": "./index.js"
-  },
-  "man": "./man/man1/camus-test.1",
-  "scripts": {
-    "test": "make test"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/vzaccaria/camus-test.git"
-  },
-  "author": "Vittorio Zaccaria",
-  "license": "BSD",
-  "bugs": {
-    "url": "https://github.com/vzaccaria/camus-test/issues"
-  },
-  "homepage": "https://github.com/vzaccaria/camus-test",
-  "dependencies": {
-    "bluebird": "3.1.1",
-    "debug": "2.2.0",
-    "probability-distributions": "0.8.5",
-    "ramda": "0.19.1",
-    "superagent": "1.6.1",
-    "superagent-promise": "1.1.0",
-    "zaccaria-cli": "0.2.0"
-  },
-  "devDependencies": {
-    "diy-build": "1.0.8",
-    "babel": "4.7.16",
-    "shelljs": "0.5.3",
-    "xyz": "0.5.0",
-    "mocha": "2.3.4",
-    "chai": "3.4.1",
-    "chai-as-promised": "5.2.0",
-    "mustache": "2.1.2",
-    "stupid-replace": "0.0.3",
-    "git-hist": "0.0.5"
-  }
+    "name": "camus-test",
+    "version": "0.1.7",
+    "description": "A little utility for testing the CAMUS prototype",
+    "main": "index.js",
+    "bin": {
+        "camus-test": "./index.js"
+    },
+    "man": "./man/man1/camus-test.1",
+    "scripts": {
+        "test": "make test"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/vzaccaria/camus-test.git"
+    },
+    "author": "Vittorio Zaccaria",
+    "license": "BSD",
+    "bugs": {
+        "url": "https://github.com/vzaccaria/camus-test/issues"
+    },
+    "homepage": "https://github.com/vzaccaria/camus-test",
+    "dependencies": {
+        "bluebird": "3.1.1",
+        "debug": "2.2.0",
+        "probability-distributions": "0.8.5",
+        "ramda": "0.19.1",
+        "superagent": "1.6.1",
+        "superagent-promise": "1.1.0",
+        "zaccaria-cli": "0.2.0",
+        "diy-build": "1.0.8",
+        "babel": "4.7.16",
+        "shelljs": "0.5.3",
+        "xyz": "0.5.0",
+        "mocha": "2.3.4",
+        "chai": "3.4.1",
+        "chai-as-promised": "5.2.0",
+        "mustache": "2.1.2",
+        "stupid-replace": "0.0.3",
+        "git-hist": "0.0.5"
+    }
 }
